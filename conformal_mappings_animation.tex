@@ -1,0 +1,45 @@
+\documentclass[tikz]{standalone}
+\usepgfmodule{nonlineartransformations} 
+\usetikzlibrary{fpu}
+\usepackage{animate}
+\usepackage{afterpage}
+\usepackage{xcolor}
+\usepackage{tkz-euclide}
+\usepackage{tikz}
+
+\usetikzlibrary{intersections}
+\def\zero{0}
+
+\makeatletter
+\newcommand{\PgfmathsetmacroFPU}[2]{\begingroup%
+\pgfkeys{/pgf/fpu,/pgf/fpu/output format=fixed}%
+\pgfmathsetmacro{#1}{#2}%
+\pgfmathsmuggle#1\endgroup}%
+\def\conformaltransformation#1{%
+\PgfmathsetmacroFPU{\myphase}{atan2(\the\pgf@y,\the\pgf@x)}
+\PgfmathsetmacroFPU{\myradius}{veclen(\pgf@y,\pgf@x)/1cm}
+\PgfmathsetmacroFPU{\iter}{#1}
+\PgfmathsetmacroFPU{\myx}{\myradius*cos((\iter)*\myphase)*0.8cm}% REAL PART
+\PgfmathsetmacroFPU{\myy}{\myradius*sin((\iter)*\myphase)*0.8cm}% IMAGINARY PART
+\pgf@x=\myx pt%
+\pgf@y=\myy pt%
+} 
+\makeatother
+
+\begin{document}
+\foreach \k  in {1,1.01,...,2.01}{
+    \pagecolor{black}\afterpage{\nopagecolor}
+    \begin{tikzpicture}
+     \fill [black] (-15,-15) rectangle (15,15);
+    \begin{scope}
+        \pgftransformnonlinear{\conformaltransformation{\k}}
+        \draw[green, thick] (-10,-10) grid (10,10);
+        
+    %÷    \draw [cyan, thick] (2,0) circle (5cm);
+    %   \foreach \s in {0, 1,..., 5} {
+    % \draw [lightgray] (5,0) circle (\s + 0.5);
+    %}
+    \end{scope} 
+    \end{tikzpicture}
+}
+\end{document}
